@@ -16,5 +16,7 @@ jobs:
       run: wget -O 1.ics https://w.mdeve.com/101272101.ics
     - name: commit
       run: |
-        git push -u  main
+        git add .
+        git commit -m "new commit"
+        git push -u origin main
    
