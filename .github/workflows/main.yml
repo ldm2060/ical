@@ -24,7 +24,7 @@ jobs:
     - name: jieqi gen
       run: |
         make
-        lunarcal > jq.ics
+        ./lunarcal > jq.ics
     - name: commit
       run: |
         git add .
