@@ -23,9 +23,9 @@ jobs:
         sed -i s/PRIVATE/PUBLIC/g ./*.ics
     - name: jieqi gen
       run: |
-        find . -name “*.o” | xargs rm -f
-        find . -name “*.h” | xargs rm -f
-        find . -name “*.c” | xargs rm -f
+        find . -name "*.o" | xargs rm -f
+        find . -name "*.h" | xargs rm -f
+        find . -name "*.c" | xargs rm -f
     - name: commit
       run: |
         git add .
