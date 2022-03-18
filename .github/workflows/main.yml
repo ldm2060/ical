@@ -10,6 +10,7 @@ jobs:
     - name: init git
       run: |
         sudo apt-get install git
+        git clone https://github.com/ldm2060/ical.git
         git remote add origin https://github.com/ldm2060/ical.git
         git pull origin main
     - name: download
