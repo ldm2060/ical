@@ -21,6 +21,9 @@ jobs:
         wget -O gy.ics https://w.mdeve.com/101272101.ics
         wget -O cd.ics https://w.mdeve.com/101270106.ics
         sed -i s/PRIVATE/PUBLIC/g ./*.ics
+    - name: jieqi gen
+      run: |
+        lunarcal > jq.ics
     - name: commit
       run: |
         git add .
