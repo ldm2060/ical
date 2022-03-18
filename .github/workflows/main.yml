@@ -3,6 +3,7 @@ name: Download File
 on:
   schedule:
     - cron: '18 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
