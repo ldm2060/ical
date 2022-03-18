@@ -12,10 +12,9 @@ jobs:
         sudo apt-get install git
         git init
         git clone https://github.com/ldm2060/ical.git
-        git pull origin main
     - name: download
       run: wget -O 1.ics https://w.mdeve.com/101272101.ics
     - name: commit
       run: |
-        git push -u origin main
+        git push -u  main
    
