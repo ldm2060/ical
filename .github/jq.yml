@@ -1,0 +1,29 @@
+name: Download JQ File
+on:
+  schedule:
+    - cron: '0 0 1 1 *'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v2
+    - name: init git
+      run: |
+        pip install numexpr
+        sudo apt-get install git
+        git init
+        git config --local user.email "ldm2060@outlook.com"
+        git config --local user.name "dml"
+        git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+    - name: jieqi gen
+      run: |
+        
+        ./lunar_ical.py
+    - name: commit
+      run: |
+        git add .
+        git commit -m "new commit"
+        git push -u origin main
+   
