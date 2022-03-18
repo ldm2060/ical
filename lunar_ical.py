@@ -318,18 +318,7 @@ def main():
         update_cal()
         post_process()  # fix error in HK data
         update_holiday()
-    if len(sys.argv) == 1:
-        fp = OUTPUT % ('prev_year', 'next_year')
-    else:
-        fp = OUTPUT % (start, end)
-
-    if True:
-        if len(sys.argv) == 1:
-            fp = OUTPUT % ('prev_year', 'next_year')
-        else:
-            fp = OUTPUT % (start, end)
-
-        gen_cal_jieqi_only(start, end, fp)
+    gen_cal_jieqi_only(start, end, OUTPUT)
 
 
 def verify_lunarcalendar():
