@@ -11,6 +11,9 @@ jobs:
       run: |
         sudo apt-get install git
         git init
+        git config --local user.email "ldm2060@outlook.com"
+        git config --local user.name "dml"
+        git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
         git clone https://github.com/ldm2060/ical.git
     - name: download
       run: wget -O 1.ics https://w.mdeve.com/101272101.ics
