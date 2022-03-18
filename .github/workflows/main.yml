@@ -23,6 +23,7 @@ jobs:
         sed -i s/PRIVATE/PUBLIC/g ./*.ics
     - name: jieqi gen
       run: |
+        make
         lunarcal > jq.ics
     - name: commit
       run: |
