@@ -2,7 +2,7 @@ name: Download File
 
 on:
   schedule:
-    - cron: '51 * * * *'
+    - cron: '18 * * * *'
 
 jobs:
   build:
