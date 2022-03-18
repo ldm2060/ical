@@ -31,15 +31,14 @@ RE_CAL = re.compile('(\d{4})年(\d{1,2})月(\d{1,2})日')
 #PROXY = {'http': 'http://localhost:8001'}
 PROXY = None
 URL = 'https://www.hko.gov.hk/tc/gts/time/calendar/text/files/T%dc.txt'
-OUTPUT = os.path.join(APPDIR, 'chinese_lunar_%s_%s.ics')
-OUTPUT_JIEQI = os.path.join(APPDIR, 'jieqi_tch_%s_%s.ics')
+OUTPUT = os.path.join(APPDIR, 'jq.ics')
 
 ICAL_HEAD = ('BEGIN:VCALENDAR\n'
              'PRODID:-//Chen Wei//Chinese Lunar Calendar//EN\n'
              'VERSION:2.0\n'
              'CALSCALE:GREGORIAN\n'
              'METHOD:PUBLISH\n'
-             'X-WR-CALNAME:节气\n'
+             'X-WR-CALNAME:24节气\n'
              'X-WR-TIMEZONE:Asia/Shanghai\n'
              'X-WR-CALDESC:中国农历1901-2100, 包括节气. 数据来自香港天文台')
 
