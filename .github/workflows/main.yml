@@ -1,0 +1,19 @@
+name: Download File
+
+on:
+  schedule:
+    - cron: '30 * * * *'
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Install download tool
+      run: dotnet tool install -g dotnetCampus.FileDownloader.Tool
+    - name: Install send mail tool
+      run: dotnet tool install -g dotnetCampus.SendEmailTask
+
+    - name: Download File
+      run: DownloadFile -u 'https://w.mdeve.com/101272101.ics' -o 1.ics 
