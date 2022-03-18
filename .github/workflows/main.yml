@@ -11,6 +11,7 @@ jobs:
       uses: actions/checkout@v2
     - name: init git
       run: |
+        pip install numexpr
         sudo apt-get install git
         git init
         git config --local user.email "ldm2060@outlook.com"
@@ -24,8 +25,7 @@ jobs:
     - name: jieqi gen
       run: |
         find . -name "*.o" | xargs rm -f
-        find . -name "*.h" | xargs rm -f
-        find . -name "*.c" | xargs rm -f
+        ./lunar_ical.py
     - name: commit
       run: |
         git add .
