@@ -53,7 +53,14 @@ ICAL_SEC = ('BEGIN:VEVENT\n'
 
 ICAL_END = 'END:VCALENDAR'
 
-
+D_SOLARTERM = { '冬至' :  '冬至' ,  '小寒' :  '小寒' ,  '大寒' :  '大寒' ,
+                '立春' :  '立春' ,  '雨水' :  '雨水' ,  '驚蟄' :  '惊蛰' ,
+                '春分' :  '春分' ,  '清明' :  '清明' ,  '穀雨' :  '谷雨' ,
+                '立夏' :  '立夏' ,  '小滿' :  '小满' ,  '芒種' :  '芒种' ,
+                '夏至' :  '夏至' ,  '小暑' :  '小暑' ,  '大暑' :  '大暑' ,
+                '立秋' :  '立秋' ,  '處暑' :  '处暑' ,  '白露' :  '白露' ,
+                '秋分' :  '秋分' ,  '寒露' :  '寒露' ,  '霜降' :  '霜降' ,
+                '立冬' :  '立冬' ,  '小雪' :  '小雪' ,  '大雪' :  '大雪' }
 
 def initdb():
     try:
@@ -219,7 +226,7 @@ def gen_cal_jieqi_only(start, end, fp):
         if r['holiday']:
             ld.append(r['holiday'])
         if r['jieqi']:
-            ld.append(r['jieqi'])
+            ld.append(D_SOLARTERM[r['jieqi']])
         uid = '%s-lc@infinet.github.io' % r['date']
         summary = ' '.join(ld)
         utcstamp = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')
