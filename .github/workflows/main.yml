@@ -14,7 +14,7 @@ jobs:
       run: dotnet tool install -g dotnetCampus.FileDownloader.Tool
     - name: Download File
       run: |
-          DownloadFile -u 'https://w.mdeve.com/101272101.ics' -o 1.ics
+          DownloadFile -u https://w.mdeve.com/101272101.ics -o 1.ics
           git add -A
           git diff HEAD --exit-code
           git config --global user.name "github-actions-docfx[bot]"
