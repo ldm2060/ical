@@ -17,7 +17,9 @@ jobs:
         git config --local user.name "dml"
         git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
     - name: download
-      run: wget -O 1.ics https://w.mdeve.com/101272101.ics
+      run: |
+        wget -O 1.ics https://w.mdeve.com/101272101.ics
+        sed -i s/PRIVATE/PUBLIC/g ./*.ics
     - name: commit
       run: |
         git add .
