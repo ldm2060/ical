@@ -43,12 +43,14 @@ ICAL_HEAD = ('BEGIN:VCALENDAR\n'
              'X-WR-CALDESC:中国农历1901-2100, 包括节气. 数据来自香港天文台')
 
 ICAL_SEC = ('BEGIN:VEVENT\n'
+            'CLASS:PUBLIC\n'
             'DTSTAMP:%s\n'
             'UID:%s\n'
             'DTSTART;VALUE=DATE:%s\n'
             'DTEND;VALUE=DATE:%s\n'
             'STATUS:CONFIRMED\n'
-            'SUMMARY:%s\n'
+            'SUMMARY;LANGUAGE=zh-cn:%s\n'
+            'TRANSP:OPAQUE\n'
             'END:VEVENT')
 
 ICAL_END = 'END:VCALENDAR'
