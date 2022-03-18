@@ -20,7 +20,7 @@ jobs:
     - name: jieqi gen
       run: |
         
-        ./lunar_ical.py
+        python lunar_ical.py
     - name: commit
       run: |
         git add .
