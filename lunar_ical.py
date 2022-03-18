@@ -297,15 +297,10 @@ def update_holiday():
 
         if m == 12 and d == 8:
             args.append((r['id'], '腊八'))
-        elif m == 7 and d == 15:
-            args.append((r['id'], '中元'))
-        elif m == 9 and d == 9:
-            args.append((r['id'], '重阳'))
         elif m == 10 and d == 15:
-            args.append((r['id'], '下元'))
-
+            args.append((r['id'], '下元节'))
         if r['jieqi'] == '清明':
-            args.append((previd, '寒食'))
+            args.append((previd, '寒食节'))
         previd = r['id']
 
     sql_update = 'update ical set holiday=? where id=?'
