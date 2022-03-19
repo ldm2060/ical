@@ -23,6 +23,7 @@ jobs:
         sed -i s/PRIVATE/PUBLIC/g ./*.ics
         sed -i ' 4 i X-PUBLISHED-TTL:PT1H\nREFRESH-INTERVAL;VALUE=DURATION:P1H' cd.ics
         sed -i ' 4 i X-PUBLISHED-TTL:PT1H\nREFRESH-INTERVAL;VALUE=DURATION:P1H' gy.ics
+        python fix_wearher
     - name: commit
       run: |
         git add .
