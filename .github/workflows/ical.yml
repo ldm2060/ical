@@ -1,4 +1,4 @@
-name: Download File
+name: Download ical File
 on:
   schedule:
     - cron: '0 * * * *'
