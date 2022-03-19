@@ -36,8 +36,6 @@ OUTPUT = os.path.join(APPDIR, 'jq.ics')
 ICAL_HEAD = ('BEGIN:VCALENDAR\n'
              'PRODID:-//Chen Wei//Chinese Lunar Calendar//EN\n'
              'VERSION:2.0\n'
-             'X-PUBLISHED-TTL:PT24H\n'
-             'REFRESH-INTERVAL;VALUE=DURATION:P24H\n'
              'CALSCALE:GREGORIAN\n'
              'METHOD:PUBLISH\n'
              'X-WR-CALNAME:24节气\n'
