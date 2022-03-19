@@ -36,6 +36,8 @@ OUTPUT = os.path.join(APPDIR, 'jq.ics')
 ICAL_HEAD = ('BEGIN:VCALENDAR\n'
              'PRODID:-//Chen Wei//Chinese Lunar Calendar//EN\n'
              'VERSION:2.0\n'
+             'X-PUBLISHED-TTL:PT24H\n'
+             'REFRESH-INTERVAL;VALUE=DURATION:P24H\n'
              'CALSCALE:GREGORIAN\n'
              'METHOD:PUBLISH\n'
              'X-WR-CALNAME:24节气\n'
@@ -63,6 +65,27 @@ D_SOLARTERM = { '冬至' :  '冬至' ,  '小寒' :  '小寒' ,  '大寒' :  '大
                 '立秋' :  '立秋' ,  '處暑' :  '处暑' ,  '白露' :  '白露' ,
                 '秋分' :  '秋分' ,  '寒露' :  '寒露' ,  '霜降' :  '霜降' ,
                 '立冬' :  '立冬' ,  '小雪' :  '小雪' ,  '大雪' :  '大雪' }
+
+CN_DAY = {'初二': 2, '初三': 3, '初四': 4, '初五': 5, '初六': 6,
+          '初七': 7, '初八': 8, '初九': 9, '初十': 10, '十一': 11,
+          '十二': 12, '十三': 13, '十四': 14, '十五': 15, '十六': 16,
+          '十七': 17, '十八': 18, '十九': 19, '二十': 20, '廿一': 21,
+          '廿二': 22, '廿三': 23, '廿四': 24, '廿五': 25, '廿六': 26,
+          '廿七': 27, '廿八': 28, '廿九': 29, '三十': 30}
+
+CN_MON = {'正月': 1, '二月': 2, '三月': 3, '四月': 4,
+          '五月': 5, '六月': 6, '七月': 7, '八月': 8,
+          '九月': 9, '十月': 10, '十一月': 11, '十二月': 12,
+
+          '閏正月': 101, '閏二月': 102, '閏三月': 103, '閏四月': 104,
+          '閏五月': 105, '閏六月': 106, '閏七月': 107, '閏八月': 108,
+          '閏九月': 109, '閏十月': 110, '閏十一月': 111, '閏十二月': 112}
+
+GAN = ('庚', '辛', '壬', '癸', '甲', '乙', '丙', '丁', '戊', '己')
+ZHI = ('申', '酉', '戌', '亥', '子', '丑',
+       '寅', '卯', '辰', '巳', '午', '未')
+SX = ('猴', '鸡', '狗', '猪', '鼠', '牛',
+      '虎', '兔', '龙', '蛇', '马', '羊')
 
 def initdb():
     try:
@@ -176,11 +199,14 @@ def gen_cal(start, end, fp):
     oneday = timedelta(days=1)
     for r in rows:
         dt = datetime.strptime(r['date'], '%Y-%m-%d')
-        ld = []
+        if r['lunardate'] in list(CN_MON.keys()):
+            ld = ['%s%s' % (lunaryear(r['date']), r['lunardate'])]
+        else:
+            ld = [r['lunardate']]
         if r['holiday']:
             ld.append(r['holiday'])
         if r['jieqi']:
-            ld.append(r['jieqi'])
+            ld.append(D_SOLARTERM[r['jieqi']])
         uid = '%s-lc@infinet.github.io' % r['date']
         summary = ' '.join(ld)
         utcstamp = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')
@@ -192,56 +218,6 @@ def gen_cal(start, end, fp):
     outputf.write('\n'.join(lines))
     outputf.close()
     print('iCal lunar calendar from %s to %s saved to %s' % (start, end, fp))
-
-
-def gen_cal_jieqi_only(start, end, fp):
-    ''' generate Jieqi and Traditional Chinese in iCalendar format.
-    Args:
-        start and end date in ISO format, like 2010-12-31
-        fp: path to output file
-    Return:
-        none
-        '''
-    startyear = int(start[:4])
-    endyear = int(end[:4])
-    if startyear > 1900 and endyear < 2101:
-        # use Lunar Calendar from HKO
-        print('use Lunar Calendar from HKO')
-        sql = ('select date, lunardate, holiday, jieqi from ical '
-               'where date>=? and date<=? order by date')
-        rows = query_db(sql, (start, end))
-    else:
-        # compute Lunar Calendar by astronomical algorithm
-        print('compute Lunar Calendar by astronomical algorithm ')
-        rows = []
-        for year in range(startyear, endyear + 1):
-            row = cn_lunarcal(year)
-            rows.extend(row)
-
-    lines = [ICAL_HEAD]
-    oneday = timedelta(days=1)
-    for r in rows:
-        if not r['holiday'] and not r['jieqi']:
-            continue
-
-        ld = []
-        if r['holiday']:
-            ld.append(r['holiday'])
-        if r['jieqi']:
-            ld.append(D_SOLARTERM[r['jieqi']])
-        uid = '%s-lc@infinet.github.io' % r['date']
-        summary = ' '.join(ld)
-        utcstamp = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')
-        dt = datetime.strptime(r['date'], '%Y-%m-%d')
-        line = ICAL_SEC % (utcstamp, uid, dt.strftime('%Y%m%d'),
-                       (dt + oneday).strftime('%Y%m%d'), summary)
-        lines.append(line)
-    lines.append(ICAL_END)
-    outputf = open(fp, 'w')
-    outputf.write('\n'.join(lines))
-    outputf.close()
-    print('iCal Jieqi/Traditional Chinese holiday calendar from %s to %s saved to %s' % (start, end, fp))
-
 
 def post_process():
     ''' there are several mistakes in HK OBS data, the following date
@@ -257,19 +233,7 @@ def post_process():
         print('fix lunar date for %s' % d)
         db.execute(sql_update, ('三十', d))
     conn.commit()
-CN_DAY = {'初二': 2, '初三': 3, '初四': 4, '初五': 5, '初六': 6,
-          '初七': 7, '初八': 8, '初九': 9, '初十': 10, '十一': 11,
-          '十二': 12, '十三': 13, '十四': 14, '十五': 15, '十六': 16,
-          '十七': 17, '十八': 18, '十九': 19, '二十': 20, '廿一': 21,
-          '廿二': 22, '廿三': 23, '廿四': 24, '廿五': 25, '廿六': 26,
-          '廿七': 27, '廿八': 28, '廿九': 29, '三十': 30}
-CN_MON = {'正月': 1, '二月': 2, '三月': 3, '四月': 4,
-          '五月': 5, '六月': 6, '七月': 7, '八月': 8,
-          '九月': 9, '十月': 10, '十一月': 11, '十二月': 12,
-
-          '閏正月': 101, '閏二月': 102, '閏三月': 103, '閏四月': 104,
-          '閏五月': 105, '閏六月': 106, '閏七月': 107, '閏八月': 108,
-          '閏九月': 109, '閏十月': 110, '閏十一月': 111, '閏十二月': 112}
+    
 def update_holiday():
     ''' write chinese traditional holiday to db
 
@@ -322,7 +286,7 @@ def main():
         update_cal()
         post_process()  # fix error in HK data
         update_holiday()
-    gen_cal_jieqi_only(start, end, OUTPUT)
+    gen_cal(start, end, OUTPUT)
 
 
 def verify_lunarcalendar():
