@@ -40,6 +40,6 @@ for filep in path:
                         list[i] = mo_month(list[i], 12, month)
                     if isaddy:
                         list[i]= mo_year(list[i], 8, year)
-        with open(filep+"1", 'w', encoding='utf-8') as fout:
+        with open(filep, 'w', encoding='utf-8') as fout:
             fout.writelines(list)
             fout.close()
