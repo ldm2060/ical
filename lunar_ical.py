@@ -40,7 +40,7 @@ ICAL_HEAD = ('BEGIN:VCALENDAR\n'
              'REFRESH-INTERVAL;VALUE=DURATION:P24H\n'
              'CALSCALE:GREGORIAN\n'
              'METHOD:PUBLISH\n'
-             'X-WR-CALNAME:24节气\n'
+             'X-WR-CALNAME:农历和节气\n'
              'X-WR-TIMEZONE:Asia/Shanghai\n'
              'X-WR-CALDESC:中国农历1901-2100, 包括节气. 数据来自香港天文台')
 
@@ -237,10 +237,7 @@ def post_process():
 def update_holiday():
     ''' write chinese traditional holiday to db
 
-    腊八节(腊月初八)     除夕(腊月的最后一天)     春节(一月一日)
-    元宵节(一月十五日)   寒食节(清明的前一天)     端午节(五月初五)
-    七夕节(七月初七)     中元节(七月十五日)       中秋节(八月十五日)
-    重阳节(九月九日)     下元节(十月十五日)
+    腊八节(腊月初八)     寒食节(清明的前一天)     下元节(十月十五日)
 
     '''
     sql = 'select * from ical order by date'
@@ -255,10 +252,8 @@ def update_holiday():
             #print 'debug: %s %s' % (r['date'], r['lunardate'])
             m = CN_MON[r['lunardate']]
             d = 1
-
         if not m:
             continue
-
         if m == 12 and d == 8:
             args.append((r['id'], '腊八'))
         elif m == 10 and d == 15:
@@ -276,6 +271,30 @@ def update_holiday():
     conn.commit()
     print('Chinese Traditional Holiday updated')
 
+def ganzhi(lyear):
+    '''generate 干支年份
+    Args:
+        lyear: four digit lyear, either integer or string
+    Return:
+        a string, e.g. 庚辰[龙]年
+    '''
+
+    g = GAN[int(str(lyear)[-1])]
+    z = ZHI[int(lyear) % 12]
+    sx = SX[int(lyear) % 12]
+    return '%s%s[%s]' % (g, z, sx)
+
+
+def lunaryear(isodate):
+    '''find lunar year for a date'''
+    sql = ('select date from ical where lunardate="正月" and '
+           'date<=? order by date desc limit 1')
+    row = query_db(sql, (isodate,), one=True)
+    res = 'Unknown'
+    if row:
+        res = ganzhi(row[0][:4])
+    return res
+  
 def main():
     cy = datetime.today().year
     start = '%d-01-01' % (cy - 1)
@@ -288,36 +307,5 @@ def main():
         update_holiday()
     gen_cal(start, end, OUTPUT)
 
-
-def verify_lunarcalendar():
-    ''' verify lunar calendar against data from HKO'''
-    start = 1949
-    sql = 'select date, lunardate,jieqi from ical where date>=? and date<=?'
-    while start < 2101:
-        print('compare %d' % start)
-        ystart = '%d-01-01' % start
-        yend = '%d-12-31' % start
-        res = query_db(sql, (ystart, yend))
-        hko = []
-        for x in res:
-            if x[2]:
-                hko.append((x[0], '%s %s' % (x[1], x[2])))
-            else:
-                hko.append((x[0], x[1]))
-
-        aalc = cn_lunarcal(start)
-        for i in range(len(aalc)):
-            aaday, aaldate = aalc[i]['date'], aalc[i]['lunardate']
-            if aalc[i]['jieqi']:
-                aaldate = '%s %s' % (aalc[i]['lunardate'], aalc[i]['jieqi'])
-            hkoday, hkoldate = hko[i]
-            #print aaday, aaldate
-            if aaday != hkoday or aaldate != hkoldate:
-                print('AA %s %s, HKO %s %s' % (aaday, aaldate, hkoday,
-                                               hkoldate))
-        start += 1
-
-
 if __name__ == "__main__":
     main()
-    #verify_lunarcalendar()
