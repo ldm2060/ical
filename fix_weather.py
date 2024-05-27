@@ -5,7 +5,7 @@ def mo_month(str1, index, month):
 def mo_year(str1, index, year):
     str1 = str1[:index] + str(int(year / 1000)) + str(int(year / 100) % 10) + str(int(year % 100 / 10)) + str(year % 10) + str1[index+4:]
     return str1
-path = {'gy.ics','cd.ics','sz.ics'}
+path = {}#{'gy.ics','cd.ics','sz.ics'}
 
 for filep in path:
     with open(filep , 'r', encoding='utf-8') as fin:
